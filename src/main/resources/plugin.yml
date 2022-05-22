@@ -1,0 +1,32 @@
+name: UHCCore
+author: rolan
+version: 1.0.0
+website: https://www.dxduhc.com
+main: fr.rolan.core.APIPlugin
+commands:
+  gamemode:
+    permission: gamemode.use
+    aliases: [gamemode, gm]
+  tell:
+    aliases: [mp, tell, msg, message, w]
+  r:
+    aliases: [r, rep, reply]
+  helpop:
+    aliases: [helpop, aled]
+  arena:
+    aliases: [arena, a]
+  host:
+    permission: host.use
+    aliases: [host, h]
+  confirm:
+    
+  kit:
+    aliases: [kit, kits, arenakit]
+  move:
+    permission: move.use
+  uhc:
+    aliases: [uhc, rules, sc]
+  coord:
+    aliases: [tc, tl, coord, coords]
+  help:
+    aliases: [help, aide]
