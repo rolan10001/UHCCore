@@ -18,6 +18,8 @@ import fr.rolan.core.api.jda.ConfigState;
 import fr.rolan.core.api.jda.JDA;
 import fr.rolan.core.api.jda.userdata.Host;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.PrivateChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
@@ -42,7 +44,7 @@ public class Request extends ListenerAdapter {
 				return;
 			event.getChannel().removeReactionById(event.getMessageIdLong(), "✅", event.getUser()).queue();
 			User user = event.getUser();
-			PrivateChannel mp = user.openPrivateChannel().complete();
+			PrivateChannel mp = (PrivateChannel) user.openPrivateChannel().complete();
 			EmbedBuilder embed = new EmbedBuilder();
 			embed.setColor(Color.red);
 			embed.setTitle("Host DxD UHC");
@@ -69,11 +71,11 @@ public class Request extends ListenerAdapter {
 			}
 			if(event.getReactionEmote().isEmoji() && event.getReactionEmote().getEmoji().equals("\uD83D\uDCDC")) {
 				User user = event.getUser();
-				PrivateChannel mp = user.openPrivateChannel().complete();
+				PrivateChannel mp = (PrivateChannel) user.openPrivateChannel().complete();
 				EmbedBuilder embed = new EmbedBuilder();
 				embed.setColor(Color.red);
 				embed.setTitle("Host DxD UHC");
-				embed.appendDescription("**Host:** "+bot.getJDA().retrieveUserById(host.getId()).complete().getName()
+				embed.appendDescription("**Host:** "+((User) bot.getJDA().retrieveUserById(host.getId()).complete()).getName()
 						+ "\n**Slot:** "+host.getSlot()
 						+ "\n\n**Message:** "+(host.getMessage() == null ? "L'host n'a pas ajouté de message." : host.getMessage())
 						+ "\n\n**Configuration:** "+(!host.hasConfig() ? "L'host n'a pas ajouté de configuration." : "\n\n"
@@ -94,16 +96,16 @@ public class Request extends ListenerAdapter {
 				host.setHascreatehost(false);
 				host.setState(ConfigState.NONE);
 				host.setMessage(null);
-				User user = bot.getJDA().retrieveUserById(host.getId()).complete();
-				PrivateChannel mp = user.openPrivateChannel().complete();
+				User user = (User) bot.getJDA().retrieveUserById(host.getId()).complete();
+				PrivateChannel mp = (PrivateChannel) user.openPrivateChannel().complete();
 				EmbedBuilder embed = new EmbedBuilder();
 				embed.setColor(Color.red);
 				embed.setTitle("Host DxD UHC");
 				embed.appendDescription("**L'administration de DxD UHC a refusé votre host.**");
 				mp.sendMessage(embed.build()).queue();
 			}else if(event.getReactionEmote().isEmoji() && event.getReactionEmote().getEmoji().equals("✅")) {
-				User user = bot.getJDA().retrieveUserById(host.getId()).complete();
-				PrivateChannel mp = user.openPrivateChannel().complete();
+				User user = (User) bot.getJDA().retrieveUserById(host.getId()).complete();
+				PrivateChannel mp = (PrivateChannel) user.openPrivateChannel().complete();
 				EmbedBuilder embed = new EmbedBuilder();
 				embed.setColor(Color.red);
 				embed.setTitle("Host DxD UHC");
@@ -113,18 +115,18 @@ public class Request extends ListenerAdapter {
 					embed.clear();
 					embed.setColor(Color.red);
 					embed.setTitle("Host DxD UHC");
-					embed.appendDescription(event.getChannel().retrieveMessageById(event.getMessageId()).complete().getEmbeds().get(0).getDescription());
+					embed.appendDescription(((MessageEmbed) ((Message) event.getChannel().retrieveMessageById(event.getMessageId()).complete()).getEmbeds().get(0)).getDescription());
 					bot.getJDA().getTextChannelById("892453924748021860").sendMessage(embed.build()).queue(message -> {
-						message.addReaction("✅").queue();
-						message.addReaction("❌").queue();
-						message.addReaction("\uD83D\uDCDC").queue();
+						((Message) message).addReaction("✅").queue();
+						((Message) message).addReaction("❌").queue();
+						((Message) message).addReaction("\uD83D\uDCDC").queue();
 						Host ho = null;
 						for(Host h : bot.getHosts().values())
 							if(h.getIDMessageConfirm().equals(event.getMessageId())) {
 								ho = h;
 								break;
 							}
-						ho.setIDMessageConfirm(message.getId());
+						ho.setIDMessageConfirm(((Message) message).getId());
 					});
 					if(host.getServer().contains("889104773385691147")) {
 						embed.clear();
@@ -133,7 +135,7 @@ public class Request extends ListenerAdapter {
 						embed.appendDescription((host.getMessage() == null ? "" : host.getMessage()+"\n\n")+
 								"**Date/Heure:** "+host.getDate().getDayOfMonth()+" "+month[host.getDate().getMonthValue()-1]+" "+host.getDate().getYear()+
 								" à *"+new DecimalFormat("00").format(host.getDate().getHour())+"h"+new DecimalFormat("00").format(host.getDate().getMinute())+"*\n\n" +
-								"**Host:** "+bot.getJDA().retrieveUserById(host.getId()).complete().getName() +
+								"**Host:** "+((User) bot.getJDA().retrieveUserById(host.getId()).complete()).getName() +
 								"\n**Serveur/IP:** mc.dxduhc.com" + 
 								"\n**Slots:** "+host.getSlot()+" :lock:" +
 								"\n**Vocal:** mumble.dxduhc.com **Port:**10007 :loud_sound:"+(!host.hasConfig() ? "\n" : "\n\n"
@@ -149,22 +151,22 @@ public class Request extends ListenerAdapter {
 										+ "- **Taille Bordure:** "+host.size_border+"+/-\n"
 										+ "- **Taille finale Bordure:** "+host.size_final_border+"+/-\n"));
 						embed.appendDescription("\nVeuillez ajouter une réaction afin de pouvoir accéder au salon whitelist et y mettre votre pseudo.");
-						bot.getJDA().getTextChannelById("889922216316239973").sendMessage(embed.build()).queue(message -> message.addReaction("✅").queue());
+						bot.getJDA().getTextChannelById("889922216316239973").sendMessage(embed.build()).queue(message -> ((Message) message).addReaction("✅").queue());
 						
 						FileConfiguration config = APIPlugin.getInstance().getBotConfig();
 						int id = 1;
-						if(config.contains("bot."+bot.getJDA().retrieveUserById(host.getId()).complete().getName()+"1.dates")) {
+						if(config.contains("bot."+((User) bot.getJDA().retrieveUserById(host.getId()).complete()).getName()+"1.dates")) {
 							for(String s : config.getConfigurationSection("bot").getKeys(false))
-								if(s.equals(bot.getJDA().retrieveUserById(host.getId()).complete().getName()+(id)))
+								if(s.equals(((User) bot.getJDA().retrieveUserById(host.getId()).complete()).getName()+(id)))
 									id++;
 						}
-						config.set("bot."+bot.getJDA().retrieveUserById(host.getId()).complete().getName()+id+".server", host.getServer());
-						config.set("bot."+bot.getJDA().retrieveUserById(host.getId()).complete().getName()+id+".slot", host.getSlot());
-						config.set("bot."+bot.getJDA().retrieveUserById(host.getId()).complete().getName()+id+".message", host.getMessage());
-						config.set("bot."+bot.getJDA().retrieveUserById(host.getId()).complete().getName()+id+".slot", host.getSlot());
-						config.set("bot."+bot.getJDA().retrieveUserById(host.getId()).complete().getName()+id+".config", host.hasConfig());
+						config.set("bot."+((User) bot.getJDA().retrieveUserById(host.getId()).complete()).getName()+id+".server", host.getServer());
+						config.set("bot."+((User) bot.getJDA().retrieveUserById(host.getId()).complete()).getName()+id+".slot", host.getSlot());
+						config.set("bot."+((User) bot.getJDA().retrieveUserById(host.getId()).complete()).getName()+id+".message", host.getMessage());
+						config.set("bot."+((User) bot.getJDA().retrieveUserById(host.getId()).complete()).getName()+id+".slot", host.getSlot());
+						config.set("bot."+((User) bot.getJDA().retrieveUserById(host.getId()).complete()).getName()+id+".config", host.hasConfig());
 						List<Integer> dates = new ArrayList<Integer>(Arrays.asList(host.getDate().getYear(), host.getDate().getMonthValue(), host.getDate().getDayOfMonth(), host.getDate().getHour(), host.getDate().getMinute()));
-						config.set("bot."+bot.getJDA().retrieveUserById(host.getId()).complete().getName()+id+".dates", dates);
+						config.set("bot."+((User) bot.getJDA().retrieveUserById(host.getId()).complete()).getName()+id+".dates", dates);
 						APIPlugin.getInstance().saveBotConfig();
 						StringBuilder builder = new StringBuilder();
 						HashMap<Integer, String> h = new HashMap<Integer, String>();
@@ -204,7 +206,7 @@ public class Request extends ListenerAdapter {
 					embed.appendDescription((host.getMessage() == null ? "" : host.getMessage()+"\n\n")+
 							"**Date/Heure:** "+host.getDate().getDayOfMonth()+" "+month[host.getDate().getMonthValue()-1]+" "+host.getDate().getYear()+
 							" à *"+new DecimalFormat("00").format(host.getDate().getHour())+"h"+new DecimalFormat("00").format(host.getDate().getMinute())+"*\n\n" +
-							"**Host:** "+bot.getJDA().retrieveUserById(host.getId()).complete().getName() +
+							"**Host:** "+((User) bot.getJDA().retrieveUserById(host.getId()).complete()).getName() +
 							"\n**Serveur/IP:** mc.dxduhc.com" + 
 							"\n**Slots:** "+host.getSlot()+" :lock:" +
 							"\n**Vocal:** mumble.dxduhc.com **Port:**10007 :loud_sound:"+(!host.hasConfig() ? "\n" : "\n\n"
@@ -220,22 +222,22 @@ public class Request extends ListenerAdapter {
 									+ "- **Taille Bordure:** "+host.size_border+"+/-\n"
 									+ "- **Taille finale Bordure:** "+host.size_final_border+"+/-\n"));
 					embed.appendDescription("\nVeuillez ajouter une réaction afin de pouvoir accéder au salon whitelist et y mettre votre pseudo.");
-					bot.getJDA().getTextChannelById("889922216316239973").sendMessage(embed.build()).queue(message -> message.addReaction("✅").queue());
+					bot.getJDA().getTextChannelById("889922216316239973").sendMessage(embed.build()).queue(message -> ((Message) message).addReaction("✅").queue());
 					
 					FileConfiguration config = APIPlugin.getInstance().getBotConfig();
 					int id = 1;
-					if(config.contains("bot."+bot.getJDA().retrieveUserById(host.getId()).complete().getName()+"1.dates")) {
+					if(config.contains("bot."+((User) bot.getJDA().retrieveUserById(host.getId()).complete()).getName()+"1.dates")) {
 						for(String s : config.getConfigurationSection("bot").getKeys(false))
-							if(s.equals(bot.getJDA().retrieveUserById(host.getId()).complete().getName()+(id)))
+							if(s.equals(((User) bot.getJDA().retrieveUserById(host.getId()).complete()).getName()+(id)))
 								id++;
 					}
-					config.set("bot."+bot.getJDA().retrieveUserById(host.getId()).complete().getName()+id+".server", host.getServer());
-					config.set("bot."+bot.getJDA().retrieveUserById(host.getId()).complete().getName()+id+".slot", host.getSlot());
-					config.set("bot."+bot.getJDA().retrieveUserById(host.getId()).complete().getName()+id+".message", host.getMessage());
-					config.set("bot."+bot.getJDA().retrieveUserById(host.getId()).complete().getName()+id+".slot", host.getSlot());
-					config.set("bot."+bot.getJDA().retrieveUserById(host.getId()).complete().getName()+id+".config", host.hasConfig());
+					config.set("bot."+((User) bot.getJDA().retrieveUserById(host.getId()).complete()).getName()+id+".server", host.getServer());
+					config.set("bot."+((User) bot.getJDA().retrieveUserById(host.getId()).complete()).getName()+id+".slot", host.getSlot());
+					config.set("bot."+((User) bot.getJDA().retrieveUserById(host.getId()).complete()).getName()+id+".message", host.getMessage());
+					config.set("bot."+((User) bot.getJDA().retrieveUserById(host.getId()).complete()).getName()+id+".slot", host.getSlot());
+					config.set("bot."+((User) bot.getJDA().retrieveUserById(host.getId()).complete()).getName()+id+".config", host.hasConfig());
 					List<Integer> dates = new ArrayList<Integer>(Arrays.asList(host.getDate().getYear(), host.getDate().getMonthValue(), host.getDate().getDayOfMonth(), host.getDate().getHour(), host.getDate().getMinute()));
-					config.set("bot."+bot.getJDA().retrieveUserById(host.getId()).complete().getName()+id+".dates", dates);
+					config.set("bot."+((User) bot.getJDA().retrieveUserById(host.getId()).complete()).getName()+id+".dates", dates);
 					APIPlugin.getInstance().saveBotConfig();
 					StringBuilder builder = new StringBuilder();
 					HashMap<Integer, String> h = new HashMap<Integer, String>();
@@ -279,12 +281,12 @@ public class Request extends ListenerAdapter {
 				EmbedBuilder embed = new EmbedBuilder();
 				embed.setColor(Color.red);
 				embed.setTitle("Host DxD UHC");
-				embed.appendDescription(event.getChannel().retrieveMessageById(event.getMessageId()).complete().getEmbeds().get(0).getDescription());
+				embed.appendDescription(((MessageEmbed) ((Message) event.getChannel().retrieveMessageById(event.getMessageId()).complete()).getEmbeds().get(0)).getDescription());
 				bot.getJDA().getTextChannelById("817484133767970828").sendMessage("@everyone").queue();
 				bot.getJDA().getTextChannelById("817484133767970828").sendMessage(embed.build()).queue(message -> {
-					message.addReaction("✅").queue();
-					message.addReaction("\uD83E\uDD14").queue();
-					message.addReaction("❌").queue();
+					((Message) message).addReaction("✅").queue();
+					((Message) message).addReaction("\uD83E\uDD14").queue();
+					((Message) message).addReaction("❌").queue();
 					});
 				event.getChannel().deleteMessageById(event.getMessageId()).queue();
 			}
@@ -306,11 +308,11 @@ public class Request extends ListenerAdapter {
 			}
 			if(event.getReactionEmote().isEmoji() && event.getReactionEmote().getEmoji().equals("\uD83D\uDCDC")) {
 				User user = event.getUser();
-				PrivateChannel mp = user.openPrivateChannel().complete();
+				PrivateChannel mp = (PrivateChannel) user.openPrivateChannel().complete();
 				EmbedBuilder embed = new EmbedBuilder();
 				embed.setColor(Color.red);
 				embed.setTitle("Host DxD UHC");
-				embed.appendDescription("**Host:** "+bot.getJDA().retrieveUserById(host.getId()).complete().getName()
+				embed.appendDescription("**Host:** "+((User) bot.getJDA().retrieveUserById(host.getId()).complete()).getName()
 						+ "\n**Slot:** "+host.getSlot()
 						+ "\n\n**Message:** "+(host.getMessage() == null ? "L'host n'a pas ajouté de message." : host.getMessage())
 						+ "\n\n**Configuration:** "+(!host.hasConfig() ? "L'host n'a pas ajouté de configuration." : "\n\n"
@@ -331,8 +333,8 @@ public class Request extends ListenerAdapter {
 				host.setHascreatehost(false);
 				host.setState(ConfigState.NONE);
 				host.setMessage(null);
-				User user = bot.getJDA().retrieveUserById(host.getId()).complete();
-				PrivateChannel mp = user.openPrivateChannel().complete();
+				User user = (User) bot.getJDA().retrieveUserById(host.getId()).complete();
+				PrivateChannel mp = (PrivateChannel) user.openPrivateChannel().complete();
 				EmbedBuilder embed = new EmbedBuilder();
 				embed.setColor(Color.red);
 				embed.setTitle("Host DxD UHC");
@@ -340,21 +342,21 @@ public class Request extends ListenerAdapter {
 				mp.sendMessage(embed.build()).queue();
 			}else if(event.getReactionEmote().isEmoji() && event.getReactionEmote().getEmoji().equals("✅")) {
 				event.getChannel().deleteMessageById(event.getMessageId()).queue();
-				User user = bot.getJDA().retrieveUserById(host.getId()).complete();
-				PrivateChannel mp = user.openPrivateChannel().complete();
+				User user = (User) bot.getJDA().retrieveUserById(host.getId()).complete();
+				PrivateChannel mp = (PrivateChannel) user.openPrivateChannel().complete();
 				EmbedBuilder embed = new EmbedBuilder();
 				embed.setColor(Color.red);
 				embed.setTitle("Host DxD UHC");
 				embed.appendDescription("**L'administration de Phyloria a accepté votre host.**");
 				mp.sendMessage(embed.build()).queue();
-				mp = event.getUser().openPrivateChannel().complete();
+				mp = (PrivateChannel) event.getUser().openPrivateChannel().complete();
 				embed.clear();
 				embed.setColor(Color.red);
 				embed.setTitle("Host DxD UHC");
 				embed.appendDescription((host.getMessage() == null ? "" : host.getMessage()+"\n\n")+
 						"**Date/Heure:** "+host.getDate().getDayOfMonth()+" "+month[host.getDate().getMonthValue()-1]+" "+host.getDate().getYear()+
 						" à *"+new DecimalFormat("00").format(host.getDate().getHour())+"h"+new DecimalFormat("00").format(host.getDate().getMinute())+"*\n\n" +
-						"**Host:** "+bot.getJDA().retrieveUserById(host.getId()).complete().getName() +
+						"**Host:** "+((User) bot.getJDA().retrieveUserById(host.getId()).complete()).getName() +
 						"\n**Serveur/IP:** mc.dxduhc.com" + 
 						"\n**Slots:** "+host.getSlot()+" :lock:" +
 						"\n**Vocal:** mumble.dxduhc.com **Port:**10007 :loud_sound:"+(!host.hasConfig() ? "\n" : "\n\n"
@@ -401,7 +403,7 @@ public class Request extends ListenerAdapter {
 				embed.setTitle("Host DxD UHC");
 				embed.appendDescription("Vous avez choisi d'Host sur le serveur **DxD UHC Host**, cliquez sur la réaction ❌ ci-dessous, si vous avez choisi la mauvaise option.\n\n"
 						+ "__Combien de slot voulez-vous ajouter ?__");
-				event.getChannel().sendMessage(embed.build()).queue(message -> message.addReaction("❌").queue());
+				event.getChannel().sendMessage(embed.build()).queue(message -> ((Message) message).addReaction("❌").queue());
 				host.setState(ConfigState.SLOT);
 			}else if(event.getReactionEmote().isEmoji() && event.getReactionEmote().getEmoji().equals("2\uFE0F\u20E3")) {
 				host.getServer().add("892453924748021860");
@@ -410,7 +412,7 @@ public class Request extends ListenerAdapter {
 				embed.setTitle("Host DxD UHC");
 				embed.appendDescription("Vous avez choisi d'Host sur le serveur **Phyloria**, cliquez sur la réaction ❌ ci-dessous, si vous avez choisi la mauvaise option.\n\n"
 						+ "__Combien de slot voulez-vous ajouter ?__");
-				event.getChannel().sendMessage(embed.build()).queue(message -> message.addReaction("❌").queue());
+				event.getChannel().sendMessage(embed.build()).queue(message -> ((Message) message).addReaction("❌").queue());
 				host.setState(ConfigState.SLOT);
 			}else if(event.getReactionEmote().isEmoji() && event.getReactionEmote().getEmoji().equals("3\uFE0F\u20E3")) {
 				host.getServer().add("889104773385691147");
@@ -420,7 +422,7 @@ public class Request extends ListenerAdapter {
 				embed.setTitle("Host DxD UHC");
 				embed.appendDescription("Vous avez choisi d'Host sur les serveurs **DxD UHC Host & Phyloria**, cliquez sur la réaction ❌ ci-dessous, si vous avez choisi la mauvaise option.\n\n"
 						+ "__Combien de slot voulez-vous ajouter ?__");
-				event.getChannel().sendMessage(embed.build()).queue(message -> message.addReaction("❌").queue());
+				event.getChannel().sendMessage(embed.build()).queue(message -> ((Message) message).addReaction("❌").queue());
 				host.setState(ConfigState.SLOT);
 			}
 		}else if(host.getState().equals(ConfigState.SLOT)) {
@@ -433,10 +435,10 @@ public class Request extends ListenerAdapter {
 					":two: » **Phyloria**\n"+
 					":three: » **DxD UHC Host & Phyloria**");
 			event.getChannel().sendMessage(embed.build()).queue(message -> {
-				message.addReaction("❌").queue();
-				message.addReaction("1\uFE0F\u20E3").queue();
-				message.addReaction("2\uFE0F\u20E3").queue();
-				message.addReaction("3\uFE0F\u20E3").queue();
+				((Message) message).addReaction("❌").queue();
+				((Message) message).addReaction("1\uFE0F\u20E3").queue();
+				((Message) message).addReaction("2\uFE0F\u20E3").queue();
+				((Message) message).addReaction("3\uFE0F\u20E3").queue();
 				});
 		}else if(host.getState().equals(ConfigState.MESSAGE)) {
 			if(!event.getMessageId().equals(event.getChannel().getLatestMessageId()) && event.getReactionEmote().isEmoji() && event.getReactionEmote().getEmoji().equals("❌")) {
@@ -445,7 +447,7 @@ public class Request extends ListenerAdapter {
 				embed.setColor(Color.red);
 				embed.setTitle("Host DxD UHC");
 				embed.appendDescription("Combien de slot voulez-vous ajouter ?");
-				event.getChannel().sendMessage(embed.build()).queue(message -> message.addReaction("❌").queue());
+				event.getChannel().sendMessage(embed.build()).queue(message -> ((Message) message).addReaction("❌").queue());
 			}else if(event.getMessageId().equals(event.getChannel().getLatestMessageId())) {
 				if(event.getReactionEmote().isEmoji() && event.getReactionEmote().getEmoji().equals("❌")) {
 					EmbedBuilder embed = new EmbedBuilder();
@@ -456,8 +458,8 @@ public class Request extends ListenerAdapter {
 							+ "✅ » **Oui**\n"
 							+ "❌ » **Non**");
 					event.getChannel().sendMessage(embed.build()).queue(message -> {
-						message.addReaction("✅").queue();
-						message.addReaction("❌").queue();
+						((Message) message).addReaction("✅").queue();
+						((Message) message).addReaction("❌").queue();
 					});
 					host.setState(ConfigState.CONFIG);
 				}else if(event.getReactionEmote().isEmoji() && event.getReactionEmote().getEmoji().equals("✅")) {
@@ -492,7 +494,7 @@ public class Request extends ListenerAdapter {
 					embed.clear();
 					embed.setColor(Color.red);
 					embed.setTitle("Host DxD UHC");
-					embed.appendDescription("● Host: **"+bot.getJDA().retrieveUserById(host.getId()).complete().getName()+"**\n"
+					embed.appendDescription("● Host: **"+((User) bot.getJDA().retrieveUserById(host.getId()).complete()).getName()+"**\n"
 							+ "● Mode de Jeu: **DxD UHC**\n"
 							+ "● Date: **"+host.getDate().getDayOfMonth()+" "+month[host.getDate().getMonthValue()-1]+" "+host.getDate().getYear()+"**\n"
 									+ "● Heure: **"+new DecimalFormat("00").format(host.getDate().getHour())+"h"+new DecimalFormat("00").format(host.getDate().getMinute())+"**\n\n"
@@ -502,10 +504,10 @@ public class Request extends ListenerAdapter {
 											+ "\uD83D\uDCDC » **Voir la configuration**"
 											+ "");
 					bot.getJDA().getTextChannelById("889104773385691147").sendMessage(embed.build()).queue(message -> {
-						message.addReaction("✅").queue();
-						message.addReaction("❌").queue();
-						message.addReaction("\uD83D\uDCDC").queue();
-						host.setIDMessageConfirm(message.getId());
+						((Message) message).addReaction("✅").queue();
+						((Message) message).addReaction("❌").queue();
+						((Message) message).addReaction("\uD83D\uDCDC").queue();
+						host.setIDMessageConfirm(((Message) message).getId());
 					});
 				}else if(event.getReactionEmote().isEmoji() && event.getReactionEmote().getEmoji().equals("✅")) {
 					host.setConfig(true);
@@ -566,7 +568,7 @@ public class Request extends ListenerAdapter {
 			embed.clear();
 			embed.setColor(Color.red);
 			embed.setTitle("Host DxD UHC");
-			embed.appendDescription("● Host: **"+bot.getJDA().retrieveUserById(host.getId()).complete().getName()+"**\n"
+			embed.appendDescription("● Host: **"+((User) bot.getJDA().retrieveUserById(host.getId()).complete()).getName()+"**\n"
 					+ "● Mode de Jeu: **DxD UHC**\n"
 					+ "● Date: **"+host.getDate().getDayOfMonth()+" "+month[host.getDate().getMonthValue()-1]+" "+host.getDate().getYear()+"**\n"
 							+ "● Heure: **"+new DecimalFormat("00").format(host.getDate().getHour())+"h"+new DecimalFormat("00").format(host.getDate().getMinute())+"**\n\n"
@@ -575,10 +577,10 @@ public class Request extends ListenerAdapter {
 									+ "❌ » **Host refusé**\n"
 									+ "\uD83D\uDCDC » **Voir la configuration**");
 			bot.getJDA().getTextChannelById("889104773385691147").sendMessage(embed.build()).queue(message -> {
-				message.addReaction("✅").queue();
-				message.addReaction("❌").queue();
-				message.addReaction("\uD83D\uDCDC").queue();
-				host.setIDMessageConfirm(message.getId());
+				((Message) message).addReaction("✅").queue();
+				((Message) message).addReaction("❌").queue();
+				((Message) message).addReaction("\uD83D\uDCDC").queue();
+				host.setIDMessageConfirm(((Message) message).getId());
 			});
 		}
 	}
@@ -635,10 +637,10 @@ public class Request extends ListenerAdapter {
 					":two: » **Phyloria**\n"+
 					":three: » **DxD UHC Host & Phyloria**");
 			event.getChannel().sendMessage(embed.build()).queue(message -> {
-				message.addReaction("❌").queue();
-				message.addReaction("1\uFE0F\u20E3").queue();
-				message.addReaction("2\uFE0F\u20E3").queue();
-				message.addReaction("3\uFE0F\u20E3").queue();
+				((Message) message).addReaction("❌").queue();
+				((Message) message).addReaction("1\uFE0F\u20E3").queue();
+				((Message) message).addReaction("2\uFE0F\u20E3").queue();
+				((Message) message).addReaction("3\uFE0F\u20E3").queue();
 				});
 			host.setState(ConfigState.SERVER);
 		}else if(host.getState().equals(ConfigState.SLOT)) {
@@ -659,7 +661,7 @@ public class Request extends ListenerAdapter {
 			embed.setTitle("Host DxD UHC");
 			embed.appendDescription("Vous avez configuré le nombre de slot maximum à **"+slot+" places**."+
 					"\nCliquez sur la réaction ❌ ci-dessous, si le nombre de slot est incorrect.");
-			event.getChannel().sendMessage(embed.build()).queue(message -> message.addReaction("❌").queue());
+			event.getChannel().sendMessage(embed.build()).queue(message -> ((Message) message).addReaction("❌").queue());
 			embed.clear();
 			embed.setColor(Color.red);
 			embed.setTitle("Host DxD UHC");
@@ -667,8 +669,8 @@ public class Request extends ListenerAdapter {
 					+ "✅ » **Oui**\n"
 					+ "❌ » **Non**");
 			event.getChannel().sendMessage(embed.build()).queue(message -> {
-				message.addReaction("✅").queue();
-				message.addReaction("❌").queue();
+				((Message) message).addReaction("✅").queue();
+				((Message) message).addReaction("❌").queue();
 			});
 			host.setState(ConfigState.MESSAGE);
 		}else if(host.getState().equals(ConfigState.MESSAGE)) {
@@ -678,7 +680,7 @@ public class Request extends ListenerAdapter {
 			embed.setTitle("Host DxD UHC");
 			embed.appendDescription("Votre message a bien été enregistré."+
 					"\nCliquez sur la réaction ❌ ci-dessous, si vous vous voulez modifier votre message.");
-			event.getChannel().sendMessage(embed.build()).queue(message -> message.addReaction("❌").queue());
+			event.getChannel().sendMessage(embed.build()).queue(message -> ((Message) message).addReaction("❌").queue());
 			embed.clear();
 			embed.setColor(Color.red);
 			embed.setTitle("Host DxD UHC");
@@ -686,8 +688,8 @@ public class Request extends ListenerAdapter {
 					+ "✅ » **Oui**\n"
 					+ "❌ » **Non**");
 			event.getChannel().sendMessage(embed.build()).queue(message -> {
-				message.addReaction("✅").queue();
-				message.addReaction("❌").queue();
+				((Message) message).addReaction("✅").queue();
+				((Message) message).addReaction("❌").queue();
 			});
 			host.setState(ConfigState.CONFIG);
 		}else if(host.getState().equals(ConfigState.LIMITES)) {
@@ -728,7 +730,7 @@ public class Request extends ListenerAdapter {
 					+ "\n- **Power "+host.power+"**"
 							+ "\n\nCliquez sur la réaction ❌ ci-dessous, pour modifier les limites.\n"
 							+ "Ajoutez désormais le moment d'activation du PvP, écrivez un nombre de minutes.");
-			event.getChannel().sendMessage(embed.build()).queue(message -> message.addReaction("❌").queue());
+			event.getChannel().sendMessage(embed.build()).queue(message -> ((Message) message).addReaction("❌").queue());
 			host.setState(ConfigState.PVP);
 		}else if(host.getState().equals(ConfigState.PVP)) {
 			try {
@@ -747,7 +749,7 @@ public class Request extends ListenerAdapter {
 			embed.appendDescription("Le PvP sera activé à **"+host.pvp+" minutes**"
 					+ "\n\nCliquez sur la réaction ❌ ci-dessous, pour modifier cette configuration.\n"
 					+ "Ajoutez désormais le moment d'annonce des rôles, écrivez un nombre de minutes.");
-			event.getChannel().sendMessage(embed.build()).queue(message -> message.addReaction("❌").queue());
+			event.getChannel().sendMessage(embed.build()).queue(message -> ((Message) message).addReaction("❌").queue());
 			host.setState(ConfigState.ROLES);
 		}else if(host.getState().equals(ConfigState.ROLES)) {
 			try {
@@ -767,7 +769,7 @@ public class Request extends ListenerAdapter {
 					+ "\n\nCliquez sur la réaction ❌ ci-dessous, pour modifier cette configuration.\n"
 					+ "Ajoutez désormais les configurations de la bordure en précisant un nombre séparé de ':' dans l'ordre suivant: le temps d'activation de la bordure, sa taille, sa taille finale.\n"
 					+ "Voici un exemple : `90:1500:350`");
-			event.getChannel().sendMessage(embed.build()).queue(message -> message.addReaction("❌").queue());
+			event.getChannel().sendMessage(embed.build()).queue(message -> ((Message) message).addReaction("❌").queue());
 			host.setState(ConfigState.BORDER);
 		}else if(host.getState().equals(ConfigState.BORDER)) {
 			String[] args = event.getMessage().getContentRaw().split(":");
@@ -801,8 +803,8 @@ public class Request extends ListenerAdapter {
 					+ "\n\nCliquez sur la réaction ❌ ci-dessous, pour modifier cette configuration.\n"
 					+ "Cliquez sur la réaction ✅ pour confirmer votre host.");
 			event.getChannel().sendMessage(embed.build()).queue(message -> {
-				message.addReaction("❌").queue();
-				message.addReaction("✅").queue();
+				((Message) message).addReaction("❌").queue();
+				((Message) message).addReaction("✅").queue();
 			});
 		}
 	}

@@ -42,6 +42,7 @@ import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import fr.rolan.api.database.DataBaseInfo;
 import fr.rolan.api.game.GameSettings;
 import fr.rolan.api.game.enums.GameState;
 import fr.rolan.api.player.IUser;
@@ -57,7 +58,6 @@ import fr.rolan.core.commands.UHCCommand;
 import fr.rolan.core.commands.host.HostCommand;
 import fr.rolan.core.commands.tabcompleter.GameModeTabCompleter;
 import fr.rolan.core.commands.tabcompleter.MoveTabCompleter;
-import fr.rolan.core.database.DataBaseInfo;
 import fr.rolan.tools.armor.ArmorEquipEvent;
 import fr.rolan.tools.armor.ArmorListener;
 import fr.rolan.tools.pregeneration.EventChunkUnload;
@@ -150,6 +150,7 @@ public class APIPlugin extends JavaPlugin implements Listener {
 		log("#========================================#");
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void onDisable() {
 		getAPI().scoreboardManager.onDisable();
@@ -189,10 +190,10 @@ public class APIPlugin extends JavaPlugin implements Listener {
 		}
 		if(!player.isWhitelisted() && Bukkit.getServer().hasWhitelist()) {
 			event.setResult(Result.KICK_WHITELIST);
-			event.setKickMessage("§6§l» §e§lDxD §c§lUHC §6§l«\n\n§c§lVous n'êtes pas whitelist sur le serveur.\n\n§7Une erreur ? Contactez l'host de la partie si ce n'est pas normal.");
+			event.setKickMessage("§6§l» §e§l"+getAPI().getSettings().NAME+" §6§l«\n\n§c§lVous n'êtes pas whitelist sur le serveur.\n\n§7Une erreur ? Contactez l'host de la partie si ce n'est pas normal.");
 		}else if(GameSettings.PLAYERS >= getAPI().s.SLOT) {
 			event.setResult(Result.KICK_OTHER);
-			event.setKickMessage("§6§l» §e§lDxD §c§lUHC §6§l«\n\n§c§lLe serveur est full.\n\n§7Une erreur ? Contactez l'host de la partie si ce n'est pas normal.");
+			event.setKickMessage("§6§l» §e§l"+getAPI().getSettings().NAME+" §6§l«\n\n§c§lLe serveur est full.\n\n§7Une erreur ? Contactez l'host de la partie si ce n'est pas normal.");
 		}
 	}
 	

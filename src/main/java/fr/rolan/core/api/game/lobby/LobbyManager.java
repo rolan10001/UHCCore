@@ -110,7 +110,7 @@ public class LobbyManager extends BukkitRunnable implements ILobbyManager {
 	public void run() {
 		if(!APIPlugin.getInstance().getAPI().getGameManager().isState(GameState.LOBBY))
 			cancel();
-		Bukkit.getOnlinePlayers().forEach(player -> NMSMethod.setTablistHeaderFooter(player, "\n§6§l» §e§l"+(APIPlugin.getInstance().getAPI().s.NAME.equalsIgnoreCase("DxD UHC") ? "DxD §c§lUHC" : APIPlugin.getInstance().getAPI().s.NAME)+" §6§l«\n\n  §e§lPing: §r"+NMSMethod.getPingColor(player)+"§r  §l▏§r  §e§lTPS: §a"+TPS.getTPS()+"§r  §l▏§r  §e§lJoueurs: §a"+Bukkit.getOnlinePlayers().size()+"  \n", "\n§eToutes les informations sur §bDxD UHC\n\n§c§lwww.dxduhc.com\n"));
+		Bukkit.getOnlinePlayers().forEach(player -> NMSMethod.setTablistHeaderFooter(player, "\n§6§l» §e§l"+(APIPlugin.getInstance().getAPI().s.NAME.equalsIgnoreCase("DxD UHC") ? "DxD §c§lUHC" : APIPlugin.getInstance().getAPI().s.NAME)+" §6§l«\n\n  §e§lPing: §r"+NMSMethod.getPingColor(player)+"§r  §l▏§r  §e§lTPS: §a"+TPS.getTPS()+"§r  §l▏§r  §e§lJoueurs: §a"+Bukkit.getOnlinePlayers().size()+"  \n", "\n§eCe plugin est open source\n\n§c§lgithub.com/rolan10001\n"));
 	}
 	
 }

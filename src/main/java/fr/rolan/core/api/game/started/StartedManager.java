@@ -129,7 +129,7 @@ public class StartedManager extends BukkitRunnable implements IStartedManager {
 			return;
 		}
 		for(Player players : Bukkit.getOnlinePlayers()) {
-			NMSMethod.setTablistHeaderFooter(players, "\n§6§l» §e§l"+(APIPlugin.getInstance().getAPI().s.NAME.equalsIgnoreCase("DxD UHC") ? "DxD §c§lUHC" : APIPlugin.getInstance().getAPI().s.NAME)+" §6§l«\n\n  §e§lPing: §r"+NMSMethod.getPingColor(players)+"§r  §l▏§r  §e§lTPS: §a"+TPS.getTPS()+"§r  §l▏§r  §e§lJoueurs: §a"+Bukkit.getOnlinePlayers().size()+"  \n", "\n§eToutes les informations sur §bDxD UHC\n\n§c§lwww.dxduhc.com\n");
+			NMSMethod.setTablistHeaderFooter(players, "\n§6§l» §e§l"+(APIPlugin.getInstance().getAPI().s.NAME.equalsIgnoreCase("DxD UHC") ? "DxD §c§lUHC" : APIPlugin.getInstance().getAPI().s.NAME)+" §6§l«\n\n  §e§lPing: §r"+NMSMethod.getPingColor(players)+"§r  §l▏§r  §e§lTPS: §a"+TPS.getTPS()+"§r  §l▏§r  §e§lJoueurs: §a"+Bukkit.getOnlinePlayers().size()+"  \n", "\n§eCe plugin est open source\n\n§c§lgithub.com/rolan10001\n");
 			NMSMethod.sendTitle(players, 1, 20, 1, "§e§l"+(APIPlugin.getInstance().getAPI().s.NAME.equalsIgnoreCase("DxD UHC") ? "DxD §c§lUHC" : APIPlugin.getInstance().getAPI().s.NAME), "§6Lancement dans §c"+i+"§6s");
 			players.playSound(players.getLocation(), "random.orb", 0.5F, (float) (0.5+i/10.0));
 		}

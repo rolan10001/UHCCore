@@ -1,9 +1,5 @@
 package fr.rolan.core;
 
-import static fr.rolan.core.database.DataBaseInfo.NAME;
-import static fr.rolan.core.database.DataBaseInfo.PASSWORD;
-import static fr.rolan.core.database.DataBaseInfo.USERNAME;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -13,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 import fr.rolan.api.UHCAPI;
+import fr.rolan.api.database.DataBaseInfo;
 import fr.rolan.api.database.IDataBaseManager;
 import fr.rolan.api.game.IGameManager;
 import fr.rolan.api.game.Settings;
@@ -68,7 +65,7 @@ public class ApiImplementation extends UHCAPI {
 		
 		this.jda = new JDA(jda);
 		//this.guiMenu = new GuiMenuImpl();
-		this.database = new DataBaseManager("jdbc:mysql://", "localhost", NAME, USERNAME, PASSWORD);
+		this.database = new DataBaseManager("jdbc:mysql://", "localhost", DataBaseInfo.NAME, DataBaseInfo.USERNAME, DataBaseInfo.PASSWORD);
 		this.permissions = new Permissions();
 		this.team = new Team();
 		this.scoreboardManager = new ScoreboardManager();
