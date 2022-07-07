@@ -107,4 +107,9 @@ public class Permissions implements IPermissions {
 	public boolean isStaff(UUID uuid) {
 		return staffs.contains(uuid);
 	}
+	
+	@Override
+	public boolean isHost(UUID uuid) {
+		return APIPlugin.getInstance().getAPI().s.HOST.equals(uuid);
+	}
 }
